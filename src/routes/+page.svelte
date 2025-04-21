@@ -48,7 +48,7 @@
 			<div class="grid grid-cols-2 gap-5">
 				<a
 					href="/hiragana"
-					class="h-[115px] rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222]"
+					class="rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222]"
 					in:fly={{ y: 20, duration: 1000, delay: 800 }}
 				>
 					<h2 class="text-2xl font-semibold">ひらがな</h2>
@@ -61,7 +61,7 @@
 				</a>
 				<a
 					href="/katakana"
-					class="h-[115px] rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222]"
+					class="rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222]"
 					in:fly={{ y: 20, duration: 1000, delay: 1200 }}
 				>
 					<h2 class="text-2xl font-semibold">カタカナ</h2>
