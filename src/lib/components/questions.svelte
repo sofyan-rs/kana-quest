@@ -79,12 +79,21 @@
 	}
 
 	function generateOptions(answer: Char) {
-		// Generate options
-		options = charList.filter((item) => item !== answer);
-		options.sort(() => Math.random() - 0.5);
-		options = options.slice(0, 3);
-		options = [answer, ...options];
-		options.sort(() => Math.random() - 0.5);
+		// Create a list excluding the correct answer
+		let distractors = charList.filter((item) => item !== answer);
+		// Shuffle the distractors
+		distractors.sort(() => Math.random() - 0.5);
+		// Take up to 3 distractors, fill if needed
+		while (distractors.length < 3) {
+			// In case charList is too small, repeat distractors randomly
+			const randomItem = charList[Math.floor(Math.random() * charList.length)];
+			if (!distractors.includes(randomItem) && randomItem !== answer) {
+				distractors.push(randomItem);
+			}
+		}
+		const optionsPool = [answer, ...distractors.slice(0, 3)];
+		// Shuffle all 4 options
+		options = optionsPool.sort(() => Math.random() - 0.5);
 	}
 
 	onMount(() => {
