@@ -3,6 +3,7 @@
 	import { ArrowLeft } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { fade, fly, slide } from 'svelte/transition';
+	import Modal from './modal.svelte';
 
 	let {
 		charList
@@ -22,6 +23,8 @@
 	let currentQuestion = $state(1);
 	let progress = $state(0);
 
+	let showModal = $state(false);
+
 	function checkAnswer(userAnswer: Char) {
 		selectedOption = userAnswer;
 		isAnswered = true;
@@ -33,6 +36,9 @@
 			prevAnswers.push(answer);
 		}
 		progress = (currentQuestion / totalQuestions) * 100;
+		if (currentQuestion >= totalQuestions) {
+			showModal = true;
+		}
 	}
 
 	function startGame() {
@@ -84,27 +90,28 @@
 	});
 </script>
 
-<div class="h-2 bg-rose-500 transition-all duration-500" style="width: {progress}%"></div>
-
-<div class="container mx-auto flex min-h-[100dvh] w-full flex-col justify-between p-5">
-	<div class="mb-10 flex justify-between">
-		<div class="flex items-center gap-5" in:fly={{ x: -10, duration: 800 }}>
-			<button onclick={() => history.back()}>
-				<ArrowLeft />
-			</button>
-			<div class="rounded-md bg-neutral-700 px-4 py-2">
-				Question No. : <span class="font-semibold text-rose-500">{currentQuestion}</span>
+<div class="flex min-h-[100dvh] w-full flex-col justify-between">
+	<div>
+		<div class="h-2 bg-rose-500 transition-all duration-500" style="width: {progress}%"></div>
+		<div class="container mx-auto mb-10 flex justify-between p-5">
+			<div class="flex items-center gap-5" in:fly={{ x: -10, duration: 800 }}>
+				<button onclick={() => history.back()}>
+					<ArrowLeft />
+				</button>
+				<div class="rounded-md bg-neutral-700 px-4 py-2">
+					Question No. : <span class="font-semibold text-rose-500">{currentQuestion}</span>
+				</div>
 			</div>
-		</div>
-		<div class="rounded-md bg-neutral-700 px-4 py-2" in:fly={{ x: 10, duration: 800 }}>
-			Total Score : <span class="font-semibold text-rose-500"
-				>{correctAnswers}/{totalQuestions}</span
-			>
+			<div class="rounded-md bg-neutral-700 px-4 py-2" in:fly={{ x: 10, duration: 800 }}>
+				Total Score : <span class="font-semibold text-rose-500"
+					>{correctAnswers}/{totalQuestions}</span
+				>
+			</div>
 		</div>
 	</div>
 
 	{#key answer?.romaji}
-		<div>
+		<div class="container mx-auto p-5">
 			<div class="mb-5 text-center text-lg" in:fly={{ y: 8, duration: 1000 }}>
 				<p>
 					Select the correct character for <span
@@ -145,7 +152,7 @@
 		</div>
 	{/key}
 
-	<div class="mt-10 flex justify-between">
+	<div class="container mx-auto mt-10 flex justify-between p-5">
 		<button
 			in:fly={{ x: -10, duration: 800 }}
 			class="rounded-md bg-rose-500 px-5 py-3 text-white shadow-[6px_6px_0px_0px_#222] transition hover:bg-rose-400 hover:shadow-[8px_8px_0px_0px_#222] disabled:opacity-50 disabled:hover:bg-rose-500"
@@ -159,3 +166,18 @@
 		>
 	</div>
 </div>
+
+<Modal
+	show={showModal}
+	closeButtonText="Restart"
+	onClose={() => {
+		showModal = false;
+		startGame();
+	}}
+>
+	<h2 class="text-2xl font-bold text-rose-500">Test Completed!</h2>
+	<p class="mt-2 text-lg">
+		You got <span class="font-semibold text-green-500">{correctAnswers}</span> out of
+		<span class="font-semibold text-rose-500">{totalQuestions}</span> correct.
+	</p>
+</Modal>
