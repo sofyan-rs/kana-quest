@@ -191,13 +191,13 @@
 					>
 						{option.char}
 						{#if isAnswered}
-							<span class="text-lg font-medium">{option.romaji}</span>
+							<span class="text-lg font-medium" in:fade={{ duration: 600 }}>{option.romaji}</span>
 						{/if}
 					</button>
 				{/each}
 			</div>
 			{#if isAnswered}
-				<div class="mt-5 text-center font-semibold">
+				<div class="mt-5 text-center text-lg font-semibold" in:fade={{ duration: 600 }}>
 					{#if isCorrect}
 						<p class="text-green-500">Correct!</p>
 					{:else}
