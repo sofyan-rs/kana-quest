@@ -2,8 +2,9 @@
 	import type { Char } from '$lib/types/char.type';
 	import { ArrowLeft } from '@lucide/svelte';
 	import { onMount } from 'svelte';
-	import { fade, fly, slide } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import Modal from './modal.svelte';
+	import { currentMode } from '$lib/stores/mode-store';
 
 	let {
 		charList
@@ -12,6 +13,16 @@
 	} = $props();
 
 	const totalQuestions = 10;
+
+	let charListByMode = $state(charList);
+	if ($currentMode === 'char-romaji') {
+		charListByMode = charList.map((item) => ({
+			char: item.romaji,
+			romaji: item.char
+		}));
+	} else {
+		charListByMode = charList;
+	}
 
 	let answer: Char | null = $state(null);
 	let options: Char[] = $state([]);
@@ -51,7 +62,7 @@
 		selectedOption = null;
 
 		// Pick new answer
-		answer = charList[Math.floor(Math.random() * charList.length)];
+		answer = charListByMode[Math.floor(Math.random() * charListByMode.length)];
 
 		// Generate options
 		generateOptions(answer);
@@ -64,12 +75,12 @@
 		selectedOption = null;
 
 		// Filter out characters already used
-		let available = charList.filter((item) => !prevAnswers.includes(item));
+		let available = charListByMode.filter((item) => !prevAnswers.includes(item));
 
 		// If all items used, reset
 		if (available.length === 0) {
 			prevAnswers = [];
-			available = [...charList];
+			available = [...charListByMode];
 		}
 		// Pick new answer
 		answer = available[Math.floor(Math.random() * available.length)];
@@ -80,13 +91,13 @@
 
 	function generateOptions(answer: Char) {
 		// Create a list excluding the correct answer
-		let distractors = charList.filter((item) => item !== answer);
+		let distractors = charListByMode.filter((item) => item !== answer);
 		// Shuffle the distractors
 		distractors.sort(() => Math.random() - 0.5);
 		// Take up to 3 distractors, fill if needed
 		while (distractors.length < 3) {
-			// In case charList is too small, repeat distractors randomly
-			const randomItem = charList[Math.floor(Math.random() * charList.length)];
+			// In case charListByMode is too small, repeat distractors randomly
+			const randomItem = charListByMode[Math.floor(Math.random() * charListByMode.length)];
 			if (!distractors.includes(randomItem) && randomItem !== answer) {
 				distractors.push(randomItem);
 			}
@@ -127,7 +138,7 @@
 				<p>
 					Select the correct character for <span
 						in:fade={{ duration: 1000 }}
-						class="font-semibold text-rose-500">{answer?.romaji}</span
+						class="text-xl font-semibold text-rose-500">{answer?.romaji}</span
 					>
 				</p>
 			</div>
@@ -146,7 +157,7 @@
 					>
 						{option.char}
 						{#if isAnswered}
-							<span class="text-base">{option.romaji}</span>
+							<span class="text-lg font-medium">{option.romaji}</span>
 						{/if}
 					</button>
 				{/each}
