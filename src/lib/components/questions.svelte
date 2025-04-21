@@ -54,11 +54,7 @@
 		answer = charList[Math.floor(Math.random() * charList.length)];
 
 		// Generate options
-		options = charList.filter((item) => item !== answer);
-		options.sort(() => Math.random() - 0.5);
-		options = options.slice(0, 3);
-		options = [answer, ...options];
-		options.sort(() => Math.random() - 0.5);
+		generateOptions(answer);
 	}
 
 	function nextQuestion() {
@@ -78,6 +74,11 @@
 		// Pick new answer
 		answer = available[Math.floor(Math.random() * available.length)];
 
+		// Generate options
+		generateOptions(answer);
+	}
+
+	function generateOptions(answer: Char) {
 		// Generate options
 		options = charList.filter((item) => item !== answer);
 		options.sort(() => Math.random() - 0.5);
