@@ -39,7 +39,7 @@
 				{@render children()}
 			</div>
 			<button
-				class="w-full cursor-pointer rounded-md bg-rose-500 px-5 py-3 text-white shadow-[6px_6px_0px_0px_#222] transition hover:bg-rose-400 hover:shadow-[8px_8px_0px_0px_#222] disabled:opacity-50 disabled:hover:bg-rose-500"
+				class="w-full rounded-md bg-rose-500 px-5 py-3 text-white shadow-[6px_6px_0px_0px_#222] transition hover:bg-rose-400 hover:shadow-[8px_8px_0px_0px_#222] disabled:opacity-50 disabled:hover:bg-rose-500"
 				onclick={onClose}>{closeButtonText ? closeButtonText : 'Close'}</button
 			>
 		</div>

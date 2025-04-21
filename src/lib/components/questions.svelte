@@ -47,6 +47,7 @@
 		prevAnswers = [];
 		correctAnswers = 0;
 		currentQuestion = 1;
+		progress = 0;
 		selectedOption = null;
 
 		// Pick new answer

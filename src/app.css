@@ -6,3 +6,7 @@ body {
 	font-family: 'Inter', sans-serif;
 	@apply bg-neutral-800 text-white;
 }
+
+button {
+	@apply cursor-pointer;
+}
