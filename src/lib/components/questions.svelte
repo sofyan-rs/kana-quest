@@ -35,6 +35,7 @@
 	let progress = $state(0);
 
 	let showModal = $state(false);
+	let audioPlayer: HTMLAudioElement | null = $state(null);
 
 	function checkAnswer(userAnswer: Char) {
 		selectedOption = userAnswer;
@@ -42,6 +43,9 @@
 		isCorrect = userAnswer.char === answer?.char;
 		if (isCorrect) {
 			correctAnswers++;
+			playAudioCorrect();
+		} else {
+			playAudioIncorrect();
 		}
 		if (answer !== null) {
 			prevAnswers.push(answer);
@@ -49,6 +53,11 @@
 		progress = (currentQuestion / totalQuestions) * 100;
 		if (currentQuestion >= totalQuestions) {
 			showModal = true;
+			if (correctAnswers > totalQuestions - 2) {
+				playAudioCongrats();
+			} else {
+				playAudioRepeatAgain();
+			}
 		}
 	}
 
@@ -105,6 +114,31 @@
 		const optionsPool = [answer, ...distractors.slice(0, 3)];
 		// Shuffle all 4 options
 		options = optionsPool.sort(() => Math.random() - 0.5);
+	}
+
+	function playAudio(src: string) {
+		if (audioPlayer) {
+			audioPlayer.pause();
+			audioPlayer.currentTime = 0;
+		}
+		audioPlayer = new Audio(src);
+		audioPlayer.play();
+	}
+
+	function playAudioCorrect() {
+		playAudio('/voices/correct.wav');
+	}
+
+	function playAudioIncorrect() {
+		playAudio('/voices/incorrect.wav');
+	}
+
+	function playAudioCongrats() {
+		playAudio('/voices/congrats.wav');
+	}
+
+	function playAudioRepeatAgain() {
+		playAudio('/voices/repeat-again.wav');
 	}
 
 	onMount(() => {
