@@ -3,6 +3,7 @@
 	import type { Char } from '$lib/types/char.type';
 	import { ArrowLeft } from '@lucide/svelte';
 	import { onMount } from 'svelte';
+	import { fade, fly } from 'svelte/transition';
 
 	const totalQuestions = 10;
 
@@ -93,40 +94,47 @@
 		</div>
 	</div>
 
-	<div>
-		<div class="mb-5 text-center text-lg">
-			<p>
-				Select the correct character for <span class="font-semibold text-rose-500"
-					>{answer?.romaji}</span
-				>
-			</p>
-		</div>
-		<div class="grid grid-cols-2 gap-5">
-			{#each options as option (option.romaji)}
-				<button
-					class="rounded-lg bg-neutral-700 p-5 text-4xl shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222] disabled:opacity-50 disabled:hover:bg-neutral-700 {option.char ===
-						answer?.char && isAnswered
-						? 'bg-green-500!'
-						: selectedOption?.char === option.char && isAnswered
-							? 'bg-red-500!'
-							: ''}"
-					onclick={() => checkAnswer(option)}
-					disabled={isAnswered}
-				>
-					{option.char}
-				</button>
-			{/each}
-		</div>
-		{#if isAnswered}
-			<div class="mt-5 text-center font-semibold">
-				{#if isCorrect}
-					<p class="text-green-500">Correct!</p>
-				{:else}
-					<p class="text-red-500">Incorrect!</p>
-				{/if}
+	{#key answer?.romaji}
+		<div>
+			<div class="mb-5 text-center text-lg">
+				<p>
+					Select the correct character for <span
+						in:fade={{ duration: 1000 }}
+						class="font-semibold text-rose-500">{answer?.romaji}</span
+					>
+				</p>
 			</div>
-		{/if}
-	</div>
+
+			<div class="grid grid-cols-2 gap-5" in:fly={{ y: 20, duration: 1000 }}>
+				{#each options as option (option.romaji)}
+					<button
+						class="flex flex-col gap-1 rounded-lg bg-neutral-700 p-5 text-4xl shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222] disabled:opacity-50 disabled:hover:bg-neutral-700 {option.char ===
+							answer?.char && isAnswered
+							? 'bg-green-500!'
+							: selectedOption?.char === option.char && isAnswered
+								? 'bg-red-500!'
+								: ''}"
+						onclick={() => checkAnswer(option)}
+						disabled={isAnswered}
+					>
+						{option.char}
+						{#if isAnswered}
+							<span class="text-base">{option.romaji}</span>
+						{/if}
+					</button>
+				{/each}
+			</div>
+			{#if isAnswered}
+				<div class="mt-5 text-center font-semibold">
+					{#if isCorrect}
+						<p class="text-green-500">Correct!</p>
+					{:else}
+						<p class="text-red-500">Incorrect!</p>
+					{/if}
+				</div>
+			{/if}
+		</div>
+	{/key}
 
 	<div class="mt-10 flex justify-between">
 		<button
