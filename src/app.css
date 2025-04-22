@@ -1,6 +1,6 @@
 @import 'tailwindcss';
-@plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+/* @plugin '@tailwindcss/forms'; */
 
 body {
 	font-family: 'Inter', sans-serif;
@@ -9,4 +9,20 @@ body {
 
 button {
 	@apply cursor-pointer;
+}
+
+/* Hide Arrow on Input */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+/* Firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+.btn-kana {
+	@apply rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222];
 }

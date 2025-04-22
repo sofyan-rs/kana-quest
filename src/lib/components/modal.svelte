@@ -6,11 +6,13 @@
 		show,
 		onClose,
 		closeButtonText,
+		title,
 		children
 	}: {
 		show: boolean;
 		onClose: () => void;
 		closeButtonText?: string;
+		title?: string;
 		children: Snippet;
 	} = $props();
 </script>
@@ -35,7 +37,10 @@
 			in:fly={{ y: 30, duration: 800 }}
 			out:fly={{ y: -30, duration: 800 }}
 		>
-			<div class="mb-5">
+			{#if title}
+				<h2 class="text-2xl font-bold text-rose-500">{title}</h2>
+			{/if}
+			<div class="my-5">
 				{@render children()}
 			</div>
 			<button

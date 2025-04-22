@@ -1,6 +1,8 @@
 <script>
-	import { currentMode } from '$lib/stores/mode-store';
-	import { ArrowLeftRight } from '@lucide/svelte';
+	import KanaSettings from '$lib/components/kana-settings.svelte';
+	import { setMode, settings } from '$lib/stores/setting-store';
+	import { ModeEnum } from '$lib/types/settings.type';
+	import { ArrowLeftRight, Settings } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { fly, slide } from 'svelte/transition';
 
@@ -8,10 +10,10 @@
 	// let mode = $state('romaji-char');
 
 	function changeMode() {
-		if ($currentMode === 'romaji-char') {
-			currentMode.set('char-romaji');
+		if ($settings.mode === ModeEnum.ROMAJI_CHAR) {
+			setMode(ModeEnum.CHAR_ROMAJI);
 		} else {
-			currentMode.set('romaji-char');
+			setMode(ModeEnum.ROMAJI_CHAR);
 		}
 	}
 
@@ -30,45 +32,49 @@
 					<div>
 						<h1 class="text-4xl font-semibold" in:slide={{ duration: 800 }}>Kana Quest</h1>
 						<p class="mt-2 text-lg text-neutral-300" in:fly={{ x: -20, duration: 800, delay: 200 }}>
-							Test your knowledge of Hiragana and Katakana!
+							Test your knowledge of Hiragana, Katakana, and Kanji!
 						</p>
 					</div>
-					<button
-						class="rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222]"
-						in:fly={{ y: 20, duration: 800, delay: 300 }}
-						onclick={changeMode}
-					>
-						<ArrowLeftRight
-							class="transition-all {$currentMode === 'romaji-char' ? 'rotate-180' : ''}"
-						/>
-					</button>
+					<div class="flex gap-2" in:fly={{ y: 20, duration: 800, delay: 300 }}>
+						<button class="btn-kana" onclick={changeMode}>
+							<ArrowLeftRight
+								class="transition-all {$settings.mode === ModeEnum.ROMAJI_CHAR ? 'rotate-180' : ''}"
+							/>
+						</button>
+						<KanaSettings />
+					</div>
 				</div>
 			</div>
 
-			<div class="grid grid-cols-2 gap-5">
-				<a
-					href="/hiragana"
-					class="rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222]"
-					in:fly={{ y: 20, duration: 1000, delay: 800 }}
-				>
+			<div class="grid grid-cols-2 gap-5 md:grid-cols-3">
+				<a href="/hiragana" class="btn-kana" in:fly={{ y: 20, duration: 1000, delay: 800 }}>
 					<h2 class="text-2xl font-semibold">ひらがな</h2>
 					<p class="font-medium">Hiragana Test</p>
-					{#key $currentMode}
+					{#key $settings.mode}
 						<p class="text-rose-500" in:slide={{ duration: 800 }}>
-							{$currentMode === 'romaji-char' ? 'Romaji - Hiragana' : 'Hiragana - Romaji'}
+							{$settings.mode === ModeEnum.ROMAJI_CHAR ? 'Romaji - Hiragana' : 'Hiragana - Romaji'}
+						</p>
+					{/key}
+				</a>
+				<a href="/katakana" class="btn-kana" in:fly={{ y: 20, duration: 1000, delay: 1200 }}>
+					<h2 class="text-2xl font-semibold">カタカナ</h2>
+					<p class="font-medium">Katakana Test</p>
+					{#key $settings.mode}
+						<p class="text-rose-500" in:slide={{ duration: 800 }}>
+							{$settings.mode === ModeEnum.ROMAJI_CHAR ? 'Romaji - Katakana' : 'Katakana - Romaji'}
 						</p>
 					{/key}
 				</a>
 				<a
-					href="/katakana"
-					class="rounded-lg bg-neutral-700 p-4 shadow-[6px_6px_0px_0px_#222] transition hover:bg-neutral-600 hover:shadow-[8px_8px_0px_0px_#222]"
-					in:fly={{ y: 20, duration: 1000, delay: 1200 }}
+					href="/kanji"
+					class="btn-kana col-span-2 md:col-auto"
+					in:fly={{ y: 20, duration: 1000, delay: 1400 }}
 				>
-					<h2 class="text-2xl font-semibold">カタカナ</h2>
-					<p class="font-medium">Katakana Test</p>
-					{#key $currentMode}
+					<h2 class="text-2xl font-semibold">漢字</h2>
+					<p class="font-medium">Kanji Test (N5)</p>
+					{#key $settings.mode}
 						<p class="text-rose-500" in:slide={{ duration: 800 }}>
-							{$currentMode === 'romaji-char' ? 'Romaji - Katakana' : 'Katakana - Romaji'}
+							{$settings.mode === ModeEnum.ROMAJI_CHAR ? 'Romaji - Kanji' : 'Kanji - Romaji'}
 						</p>
 					{/key}
 				</a>

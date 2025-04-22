@@ -1,6 +1,6 @@
-import type { Char } from '$lib/types/char.type';
+import type { CharType } from '$lib/types/char.type';
 
-export const katakanaList: Char[] = [
+export const katakanaList: CharType[] = [
 	// A-row
 	{ char: 'ア', romaji: 'a' },
 	{ char: 'イ', romaji: 'i' },

@@ -1,6 +1,6 @@
-import type { Char } from '$lib/types/char.type';
+import type { CharType } from '$lib/types/char.type';
 
-export const hiraganaList: Char[] = [
+export const hiraganaList: CharType[] = [
 	// a-row
 	{ char: 'あ', romaji: 'a' },
 	{ char: 'い', romaji: 'i' },

@@ -1,35 +1,35 @@
 <script lang="ts">
-	import type { Char } from '$lib/types/char.type';
+	import type { CharType } from '$lib/types/char.type';
 	import { ArrowLeft } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { fade, fly } from 'svelte/transition';
 	import Modal from './modal.svelte';
-	import { currentMode } from '$lib/stores/mode-store';
+	import { ModeEnum } from '$lib/types/settings.type';
+	import { settings } from '$lib/stores/setting-store';
 
 	let {
 		charList
 	}: {
-		charList: Char[];
+		charList: CharType[];
 	} = $props();
 
-	const totalQuestions = 10;
-
 	let charListByMode = $state(charList);
-	if ($currentMode === 'char-romaji') {
+	if ($settings.mode === ModeEnum.CHAR_ROMAJI) {
 		charListByMode = charList.map((item) => ({
 			char: item.romaji,
-			romaji: item.char
+			romaji: item.char,
+			translation: item.translation
 		}));
 	} else {
 		charListByMode = charList;
 	}
 
-	let answer: Char | null = $state(null);
-	let options: Char[] = $state([]);
+	let answer: CharType | null = $state(null);
+	let options: CharType[] = $state([]);
 	let isAnswered = $state(false);
 	let isCorrect = $state(false);
-	let prevAnswers: Char[] = $state([]);
-	let selectedOption: Char | null = $state(null);
+	let prevAnswers: CharType[] = $state([]);
+	let selectedOption: CharType | null = $state(null);
 	let correctAnswers = $state(0);
 	let currentQuestion = $state(1);
 	let progress = $state(0);
@@ -37,7 +37,7 @@
 	let showModal = $state(false);
 	let audioPlayer: HTMLAudioElement | null = $state(null);
 
-	function checkAnswer(userAnswer: Char) {
+	function checkAnswer(userAnswer: CharType) {
 		selectedOption = userAnswer;
 		isAnswered = true;
 		isCorrect = userAnswer.char === answer?.char;
@@ -50,10 +50,10 @@
 		if (answer !== null) {
 			prevAnswers.push(answer);
 		}
-		progress = (currentQuestion / totalQuestions) * 100;
-		if (currentQuestion >= totalQuestions) {
+		progress = (currentQuestion / $settings.totalQuestions) * 100;
+		if (currentQuestion >= $settings.totalQuestions) {
 			showModal = true;
-			if (correctAnswers > totalQuestions - 2) {
+			if (correctAnswers > $settings.totalQuestions - 2) {
 				playAudioCongrats();
 			} else {
 				playAudioRepeatAgain();
@@ -98,7 +98,7 @@
 		generateOptions(answer);
 	}
 
-	function generateOptions(answer: Char) {
+	function generateOptions(answer: CharType) {
 		// Create a list excluding the correct answer
 		let distractors = charListByMode.filter((item) => item !== answer);
 		// Shuffle the distractors
@@ -117,6 +117,9 @@
 	}
 
 	function playAudio(src: string) {
+		if (!$settings.voice) {
+			return;
+		}
 		if (audioPlayer) {
 			audioPlayer.pause();
 			audioPlayer.currentTime = 0;
@@ -160,7 +163,7 @@
 			</div>
 			<div class="rounded-md bg-neutral-700 px-4 py-2" in:fly={{ x: 10, duration: 800 }}>
 				Total Score : <span class="font-semibold text-rose-500"
-					>{correctAnswers}/{totalQuestions}</span
+					>{correctAnswers}/{$settings.totalQuestions}</span
 				>
 			</div>
 		</div>
@@ -191,7 +194,12 @@
 					>
 						{option.char}
 						{#if isAnswered}
-							<span class="text-lg font-medium" in:fade={{ duration: 600 }}>{option.romaji}</span>
+							<div class="flex flex-col gap-1 text-lg font-medium" in:fade={{ duration: 600 }}>
+								<span>{option.romaji}</span>
+								{#if option.translation}
+									<span class="text-sm">({option.translation})</span>
+								{/if}
+							</div>
 						{/if}
 					</button>
 				{/each}
@@ -218,7 +226,7 @@
 			in:fly={{ x: 10, duration: 800 }}
 			class="rounded-md bg-rose-500 px-5 py-3 text-white shadow-[6px_6px_0px_0px_#222] transition hover:bg-rose-400 hover:shadow-[8px_8px_0px_0px_#222] disabled:opacity-50 disabled:hover:bg-rose-500"
 			onclick={nextQuestion}
-			disabled={currentQuestion >= totalQuestions || !isAnswered}>Next</button
+			disabled={currentQuestion >= $settings.totalQuestions || !isAnswered}>Next</button
 		>
 	</div>
 </div>
@@ -226,14 +234,14 @@
 <Modal
 	show={showModal}
 	closeButtonText="Restart"
+	title="Test Completed!"
 	onClose={() => {
 		showModal = false;
 		startGame();
 	}}
 >
-	<h2 class="text-2xl font-bold text-rose-500">Test Completed!</h2>
-	<p class="mt-2 text-lg">
+	<p class="text-lg">
 		You got <span class="font-semibold text-green-500">{correctAnswers}</span> out of
-		<span class="font-semibold text-rose-500">{totalQuestions}</span> correct.
+		<span class="font-semibold text-rose-500">{$settings.totalQuestions}</span> correct.
 	</p>
 </Modal>
