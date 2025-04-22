@@ -152,13 +152,13 @@
 <div class="flex min-h-[100dvh] w-full flex-col justify-between">
 	<div>
 		<div class="h-2 bg-rose-500 transition-all duration-500" style="width: {progress}%"></div>
-		<div class="container mx-auto mb-10 flex justify-between p-5">
+		<div class="container mx-auto mb-10 flex justify-between gap-4 p-5">
 			<div class="flex items-center gap-5" in:fly={{ x: -10, duration: 800 }}>
 				<button onclick={() => history.back()}>
 					<ArrowLeft />
 				</button>
 				<div class="rounded-md bg-neutral-700 px-4 py-2">
-					Question No. : <span class="font-semibold text-rose-500">{currentQuestion}</span>
+					Question <span class="font-semibold text-rose-500">{currentQuestion}</span>
 				</div>
 			</div>
 			<div class="rounded-md bg-neutral-700 px-4 py-2" in:fly={{ x: 10, duration: 800 }}>
