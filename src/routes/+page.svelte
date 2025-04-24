@@ -2,7 +2,7 @@
 	import KanaSettings from '$lib/components/kana-settings.svelte';
 	import { setMode, settings } from '$lib/stores/setting-store';
 	import { ModeEnum } from '$lib/types/settings.type';
-	import { ArrowLeftRight, Settings } from '@lucide/svelte';
+	import { ArrowLeftRight } from '@lucide/svelte';
 	import { onMount } from 'svelte';
 	import { fly, slide } from 'svelte/transition';
 
