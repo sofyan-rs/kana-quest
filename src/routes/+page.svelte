@@ -7,7 +7,6 @@
 	import { fly, slide } from 'svelte/transition';
 
 	let animation = $state(false);
-	// let mode = $state('romaji-char');
 
 	function changeMode() {
 		if ($settings.mode === ModeEnum.ROMAJI_CHAR) {
